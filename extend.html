@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend Your Stay | Apex Truck Parking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+            --white: #ffffff;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+        }
+
+        .header-inner {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+
+        .logo-highlight { color: var(--primary); }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
+            color: var(--white);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .time-warning {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-top: 16px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 32px;
+        }
+
+        .current-info {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: var(--gray-500);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .extend-options {
+            margin-bottom: 24px;
+        }
+
+        .extend-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            background: var(--white);
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .option-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-btn.selected .option-radio {
+            border-color: var(--primary);
+        }
+
+        .option-btn.selected .option-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .option-days {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .option-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .stripe-element {
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #059669;
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .secure-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .call-option {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .call-option p {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .call-option a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active { display: flex; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .success-state.active { display: block; }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .success-state h2 {
+            font-size: 24px;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+
+        .success-state p {
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+
+        .new-checkout {
+            background: var(--gray-100);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                🚛 APEX<span class="logo-highlight">TRUCK</span>PARKING
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Extend Your Stay</h1>
+                <p>Need more time? No problem!</p>
+                <div class="time-warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    Current checkout: Today at 12:00 PM
+                </div>
+            </div>
+
+            <div class="card-body" id="extend-form-container">
+                <div class="current-info">
+                    <div class="info-row">
+                        <span class="info-label">Confirmation</span>
+                        <span class="info-value" id="display-confirmation">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value" id="display-phone">-</span>
+                    </div>
+                </div>
+
+                <div class="extend-options">
+                    <div class="extend-title">How long do you need?</div>
+
+                    <button type="button" class="option-btn selected" data-days="1" data-price="15">
+                        <div class="option-left">
+                            <div class="option-radio"></div>
+                            <span class="option-days">1 more day</span>
+                        </div>
+                        <span class="option-price">$15</span>
+                    </button>
+
+                    <button type="button" class="option-btn" data-days="2" data-price="30">
+                        <div class="option-left">
+                            <div class="option-radio"></div>
+                            <span class="option-days">2 more days</span>
+                        </div>
+                        <span class="option-price">$30</span>
+                    </button>
+
+                    <button type="button" class="option-btn" data-days="3" data-price="45">
+                        <div class="option-left">
+                            <div class="option-radio"></div>
+                            <span class="option-days">3 more days</span>
+                        </div>
+                        <span class="option-price">$45</span>
+                    </button>
+
+                    <button type="button" class="option-btn" data-days="7" data-price="105">
+                        <div class="option-left">
+                            <div class="option-radio"></div>
+                            <span class="option-days">1 week</span>
+                        </div>
+                        <span class="option-price">$105</span>
+                    </button>
+                </div>
+
+                <form id="extend-form">
+                    <div class="form-group">
+                        <label>Card Information</label>
+                        <div id="card-element" class="stripe-element"></div>
+                    </div>
+
+                    <div id="card-errors" class="error-message"></div>
+
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                        <span id="btn-text">Pay $15 & Extend</span>
+                    </button>
+
+                    <p class="secure-note">
+                        🔒 Secure payment powered by Stripe
+                    </p>
+                </form>
+
+                <div class="call-option">
+                    <p>Questions or need help?</p>
+                    <a href="tel:+14708382281">Call (470) 838-2281</a>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div class="success-state" id="success-state">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                </div>
+                <h2>Stay Extended!</h2>
+                <p>Your parking has been extended.</p>
+                <div class="new-checkout">
+                    New checkout: <span id="new-checkout-date">-</span>
+                </div>
+                <p>A confirmation SMS has been sent to your phone.</p>
+                <a href="index.html" class="btn btn-primary" style="margin-top: 24px; text-decoration: none;">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let selectedDays = 1;
+        let selectedPrice = 15;
+        let confirmationCode = '';
+        let phone = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get params from URL
+            const params = new URLSearchParams(window.location.search);
+            confirmationCode = params.get('confirmation') || '';
+            phone = params.get('phone') || '';
+
+            // Display info
+            document.getElementById('display-confirmation').textContent = confirmationCode || 'Not found';
+            document.getElementById('display-phone').textContent = phone || 'Not found';
+
+            // Option buttons
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedDays = parseInt(this.dataset.days);
+                    selectedPrice = parseInt(this.dataset.price);
+                    document.getElementById('btn-text').textContent = `Pay $${selectedPrice} & Extend`;
+                });
+            });
+
+            // Initialize Stripe (demo mode check)
+            if (!CONFIG.STRIPE_PUBLISHABLE_KEY.includes('XXXX')) {
+                const stripe = Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
+                const elements = stripe.elements();
+                const cardElement = elements.create('card');
+                cardElement.mount('#card-element');
+            } else {
+                document.getElementById('card-element').innerHTML =
+                    '<input type="text" placeholder="Demo Mode - 4242 4242 4242 4242" style="width:100%;padding:8px;border:none;">';
+            }
+
+            // Form submission
+            document.getElementById('extend-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                document.getElementById('loading-overlay').classList.add('active');
+
+                // Demo mode
+                if (CONFIG.DEV_MODE) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    showSuccess();
+                    return;
+                }
+
+                // Production: call extend API
+                try {
+                    const response = await fetch('/api/extend-stay', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            confirmationCode,
+                            phone,
+                            additionalDays: selectedDays,
+                            amount: selectedPrice * 100
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error);
+
+                    showSuccess();
+                } catch (error) {
+                    document.getElementById('loading-overlay').classList.remove('active');
+                    document.getElementById('card-errors').textContent = error.message;
+                    document.getElementById('card-errors').style.display = 'block';
+                }
+            });
+        });
+
+        function showSuccess() {
+            document.getElementById('loading-overlay').classList.remove('active');
+            document.getElementById('extend-form-container').style.display = 'none';
+            document.getElementById('success-state').classList.add('active');
+
+            // Calculate new checkout date
+            const newDate = new Date();
+            newDate.setDate(newDate.getDate() + selectedDays);
+            document.getElementById('new-checkout-date').textContent =
+                newDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + ' at 12:00 PM';
+        }
+    </script>
+</body>
+</html>

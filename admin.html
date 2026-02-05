@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Apex Truck Parking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+            --white: #ffffff;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-700);
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .login-logo span { color: var(--primary); }
+
+        .login-title {
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .error-text {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* Dashboard */
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+        .login-container.hidden { display: none; }
+
+        .header {
+            background: var(--white);
+            padding: 16px 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .header-logo span { color: var(--primary); }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-btn {
+            background: var(--gray-100);
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover { background: var(--gray-200); }
+
+        .main-content {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .stat-value.success { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+        .stat-value.error { color: var(--error); }
+
+        .stat-subtitle {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* Date Picker */
+        .date-picker-section {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .date-picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .date-picker-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .date-input {
+            padding: 10px 16px;
+            font-size: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+        }
+
+        /* Capacity Bar */
+        .capacity-section {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .capacity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .capacity-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .capacity-count {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .capacity-bar {
+            height: 24px;
+            background: var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .capacity-fill.warning { background: var(--warning); }
+        .capacity-fill.full { background: var(--error); }
+
+        /* Reservations Table */
+        .reservations-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        th {
+            background: var(--gray-50);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            background: var(--white);
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .action-btn:hover {
+            background: var(--gray-50);
+        }
+
+        .action-btn.danger {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .action-btn.danger:hover {
+            background: #fee2e2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Quick Add Form */
+        .quick-add {
+            background: var(--gray-50);
+            padding: 20px 24px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .quick-add-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .quick-add-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-add-form input {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 14px;
+            font-size: 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+        }
+
+        .quick-add-form button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .quick-add-form {
+                flex-direction: column;
+            }
+
+            .quick-add-form input,
+            .quick-add-form button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="login-container">
+        <div class="login-card">
+            <div class="login-logo">🚛 APEX<span>TRUCK</span>PARKING</div>
+            <div class="login-title">Admin Dashboard</div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+                <p class="error-text" id="login-error" style="display: none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <header class="header">
+            <div class="header-logo">🚛 APEX<span>TRUCK</span>PARKING Admin</div>
+            <div class="header-actions">
+                <span id="user-email"></span>
+                <button class="logout-btn" onclick="logout()">Sign Out</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Today's Reservations</div>
+                    <div class="stat-value" id="stat-today">0</div>
+                    <div class="stat-subtitle">of 4 spots</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="stat-week">0</div>
+                    <div class="stat-subtitle">total reservations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Revenue (This Month)</div>
+                    <div class="stat-value success" id="stat-revenue">$0</div>
+                    <div class="stat-subtitle">from daily parking</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Availability Status</div>
+                    <div class="stat-value" id="stat-status">Open</div>
+                    <div class="stat-subtitle" id="stat-status-sub">accepting reservations</div>
+                </div>
+            </div>
+
+            <!-- Date Picker -->
+            <div class="date-picker-section">
+                <div class="date-picker-header">
+                    <div class="date-picker-title">View Reservations By Date</div>
+                    <input type="date" class="date-input" id="view-date" value="">
+                </div>
+            </div>
+
+            <!-- Capacity -->
+            <div class="capacity-section">
+                <div class="capacity-header">
+                    <div class="capacity-title">Daily Parking Capacity</div>
+                    <div class="capacity-count"><span id="capacity-used">0</span> / 4 spots</div>
+                </div>
+                <div class="capacity-bar">
+                    <div class="capacity-fill" id="capacity-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Reservations Table -->
+            <div class="reservations-section">
+                <div class="section-header">
+                    <div class="section-title">Reservations for <span id="selected-date-label">Today</span></div>
+                    <button class="action-btn" onclick="refreshData()">
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>DOT #</th>
+                                <th>MC #</th>
+                                <th>Truck Info</th>
+                                <th>Status</th>
+                                <th>Paid</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservations-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                    <p>No reservations for this date</p>
+                </div>
+
+                <!-- Quick Add -->
+                <div class="quick-add">
+                    <div class="quick-add-title">Quick Add Walk-in Reservation</div>
+                    <form class="quick-add-form" id="quick-add-form">
+                        <input type="text" name="name" placeholder="Driver Name" required>
+                        <input type="tel" name="phone" placeholder="Phone" required>
+                        <input type="text" name="dot" placeholder="DOT #" required>
+                        <input type="text" name="truck" placeholder="Truck Info">
+                        <button type="submit">+ Add Reservation</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // State
+        let currentUser = null;
+        let selectedDate = new Date().toISOString().split('T')[0];
+        let reservations = [];
+
+        // Demo data for development
+        const DEMO_RESERVATIONS = [
+            {
+                id: '1',
+                name: 'John Smith',
+                phone: '(555) 123-4567',
+                email: 'john@example.com',
+                dotNumber: '1234567',
+                mcNumber: 'MC-123456',
+                truckInfo: 'White Freightliner, Plate ABC-1234',
+                parkingDate: new Date().toISOString().split('T')[0],
+                status: 'confirmed',
+                amount: 15,
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: '2',
+                name: 'Mike Johnson',
+                phone: '(555) 987-6543',
+                email: 'mike@trucking.com',
+                dotNumber: '7654321',
+                mcNumber: 'MC-654321',
+                truckInfo: 'Blue Peterbilt 579',
+                parkingDate: new Date().toISOString().split('T')[0],
+                status: 'confirmed',
+                amount: 15,
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for existing session
+            const savedUser = localStorage.getItem('apex_admin_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+
+            // Set date picker to today
+            document.getElementById('view-date').value = selectedDate;
+
+            // Event listeners
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('view-date').addEventListener('change', handleDateChange);
+            document.getElementById('quick-add-form').addEventListener('submit', handleQuickAdd);
+        });
+
+        // Login
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+
+            // Demo mode login
+            if (CONFIG.DEV_MODE) {
+                if (email && password === 'admin123') {
+                    currentUser = { email };
+                    localStorage.setItem('apex_admin_user', JSON.stringify(currentUser));
+                    showDashboard();
+                    return;
+                } else {
+                    errorEl.textContent = 'Demo: Use any email with password "admin123"';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+            }
+
+            // Production: Use Supabase Auth
+            try {
+                const response = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': CONFIG.SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error_description || data.error);
+                }
+
+                currentUser = { email, token: data.access_token };
+                localStorage.setItem('apex_admin_user', JSON.stringify(currentUser));
+                showDashboard();
+
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('apex_admin_user');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('login-container').classList.remove('hidden');
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('user-email').textContent = currentUser.email;
+            loadReservations();
+        }
+
+        // Load reservations
+        async function loadReservations() {
+            if (CONFIG.DEV_MODE) {
+                // Use demo data
+                reservations = DEMO_RESERVATIONS.filter(r => r.parkingDate === selectedDate);
+            } else {
+                try {
+                    const response = await fetch(
+                        `${CONFIG.SUPABASE_URL}/rest/v1/reservations?parking_date=eq.${selectedDate}&order=created_at.desc`,
+                        {
+                            headers: {
+                                'apikey': CONFIG.SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${currentUser.token}`
+                            }
+                        }
+                    );
+                    reservations = await response.json();
+                } catch (error) {
+                    console.error('Error loading reservations:', error);
+                    reservations = [];
+                }
+            }
+
+            updateUI();
+        }
+
+        // Update UI
+        function updateUI() {
+            const confirmedCount = reservations.filter(r => r.status === 'confirmed').length;
+
+            // Stats
+            document.getElementById('stat-today').textContent = confirmedCount;
+            document.getElementById('stat-week').textContent = confirmedCount * 5; // Simplified
+            document.getElementById('stat-revenue').textContent = '$' + (confirmedCount * 15);
+
+            // Status
+            const statusEl = document.getElementById('stat-status');
+            const statusSubEl = document.getElementById('stat-status-sub');
+            if (confirmedCount >= CONFIG.MAX_DAILY_SPOTS) {
+                statusEl.textContent = 'Full';
+                statusEl.className = 'stat-value error';
+                statusSubEl.textContent = 'not accepting daily';
+            } else if (confirmedCount >= CONFIG.MAX_DAILY_SPOTS - 1) {
+                statusEl.textContent = 'Almost Full';
+                statusEl.className = 'stat-value warning';
+                statusSubEl.textContent = '1 spot left';
+            } else {
+                statusEl.textContent = 'Open';
+                statusEl.className = 'stat-value success';
+                statusSubEl.textContent = 'accepting reservations';
+            }
+
+            // Capacity bar
+            const capacityPct = (confirmedCount / CONFIG.MAX_DAILY_SPOTS) * 100;
+            const capacityFill = document.getElementById('capacity-fill');
+            capacityFill.style.width = capacityPct + '%';
+            capacityFill.className = 'capacity-fill';
+            if (capacityPct >= 100) capacityFill.classList.add('full');
+            else if (capacityPct >= 75) capacityFill.classList.add('warning');
+            document.getElementById('capacity-used').textContent = confirmedCount;
+
+            // Date label
+            const dateObj = new Date(selectedDate + 'T12:00:00');
+            const dateLabel = dateObj.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('selected-date-label').textContent = dateLabel;
+
+            // Table
+            const tbody = document.getElementById('reservations-body');
+            const emptyState = document.getElementById('empty-state');
+
+            if (reservations.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                tbody.innerHTML = reservations.map(r => `
+                    <tr>
+                        <td><strong>${r.name || r.firstName + ' ' + r.lastName}</strong><br><small>${r.email || ''}</small></td>
+                        <td>${r.phone}</td>
+                        <td>${r.dotNumber}</td>
+                        <td>${r.mcNumber || '-'}</td>
+                        <td>${r.truckInfo || '-'}</td>
+                        <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+                        <td>$${r.amount || 15}</td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetails('${r.id}')">View</button>
+                            <button class="action-btn danger" onclick="cancelReservation('${r.id}')">Cancel</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Handle date change
+        function handleDateChange(e) {
+            selectedDate = e.target.value;
+            loadReservations();
+        }
+
+        // Refresh data
+        function refreshData() {
+            loadReservations();
+        }
+
+        // View details
+        function viewDetails(id) {
+            const reservation = reservations.find(r => r.id === id);
+            if (reservation) {
+                alert(JSON.stringify(reservation, null, 2));
+            }
+        }
+
+        // Cancel reservation
+        async function cancelReservation(id) {
+            if (!confirm('Are you sure you want to cancel this reservation?')) return;
+
+            if (CONFIG.DEV_MODE) {
+                // Demo mode
+                const index = DEMO_RESERVATIONS.findIndex(r => r.id === id);
+                if (index > -1) {
+                    DEMO_RESERVATIONS[index].status = 'cancelled';
+                }
+                loadReservations();
+                return;
+            }
+
+            try {
+                await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reservations?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': CONFIG.SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify({ status: 'cancelled' })
+                });
+                loadReservations();
+            } catch (error) {
+                alert('Error cancelling reservation: ' + error.message);
+            }
+        }
+
+        // Quick add
+        async function handleQuickAdd(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const newReservation = {
+                id: Date.now().toString(),
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                dotNumber: formData.get('dot'),
+                truckInfo: formData.get('truck'),
+                parkingDate: selectedDate,
+                status: 'confirmed',
+                amount: 15,
+                createdAt: new Date().toISOString()
+            };
+
+            if (CONFIG.DEV_MODE) {
+                DEMO_RESERVATIONS.push(newReservation);
+                e.target.reset();
+                loadReservations();
+                return;
+            }
+
+            try {
+                await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reservations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': CONFIG.SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify(newReservation)
+                });
+                e.target.reset();
+                loadReservations();
+            } catch (error) {
+                alert('Error adding reservation: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "apex-truck-parking",
+  "version": "1.0.0",
+  "description": "Apex Truck Parking Website",
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "twilio": "^4.20.0",
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
