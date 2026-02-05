@@ -5,6 +5,10 @@
   functions = "netlify/functions"
   command = "npm install"
 
+[build.environment]
+  # Skip secrets scanning for intentionally public frontend keys
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"
+
 [functions]
   node_bundler = "esbuild"
   included_files = ["node_modules/**"]
