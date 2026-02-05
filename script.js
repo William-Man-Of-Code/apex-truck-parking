@@ -6,7 +6,7 @@
 // Configuration
 const SITE_CONFIG = {
     MAX_DAILY_SPOTS: 4,
-    DAILY_RATE: 15,
+    DAILY_RATE: 20,
     DEV_MODE: true // Set to false in production
 };
 

@@ -132,7 +132,7 @@ exports.handler = async (event, context) => {
             truck_info: data.vehicle_type || 'Truck Parking Club Booking',
             parking_date: date,
             parking_type: 'daily',
-            amount: Math.round((data.amount_paid || 15) * 100 / parkingDates.length), // cents per day
+            amount: Math.round((data.amount_paid || 20) * 100 / parkingDates.length), // cents per day
             status: 'confirmed',
             confirmation_code: confirmationCode,
             created_at: new Date().toISOString()

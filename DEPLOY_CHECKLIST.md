@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS reservations (
     truck_info TEXT,
     parking_date DATE NOT NULL,
     parking_type TEXT DEFAULT 'daily',
-    amount INTEGER DEFAULT 1500,
+    amount INTEGER DEFAULT 2000,
     status TEXT DEFAULT 'confirmed',
     stripe_payment_id TEXT,
     confirmation_code TEXT,

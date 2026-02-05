@@ -56,7 +56,7 @@ CREATE TABLE reservations (
     truck_info TEXT,
     parking_date DATE NOT NULL,
     parking_type TEXT DEFAULT 'daily',
-    amount INTEGER DEFAULT 1500, -- in cents
+    amount INTEGER DEFAULT 2000, -- in cents
     status TEXT DEFAULT 'confirmed',
     stripe_payment_id TEXT,
     confirmation_code TEXT,
@@ -97,7 +97,7 @@ const CONFIG = {
     STRIPE_PUBLISHABLE_KEY: 'pk_live_YOUR_KEY_HERE',
     SUPABASE_URL: 'https://YOUR_PROJECT.supabase.co',
     SUPABASE_ANON_KEY: 'YOUR_ANON_KEY',
-    DAILY_RATE: 15,
+    DAILY_RATE: 20,
     MAX_DAILY_SPOTS: 4,
     BUSINESS_PHONE: '(470) 838-2281',
     DEV_MODE: false, // IMPORTANT: Set to false for production
@@ -139,7 +139,7 @@ exports.handler = async (event) => {
 
 Simpler approach - create a Payment Link in Stripe Dashboard:
 1. Go to [Stripe Payment Links](https://dashboard.stripe.com/payment-links)
-2. Create a product "Daily Truck Parking - $15"
+2. Create a product "Daily Truck Parking - $20"
 3. Enable "Let customers adjust quantity"
 4. Update checkout.js to redirect to your payment link instead
 

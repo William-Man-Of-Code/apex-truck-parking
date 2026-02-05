@@ -12,7 +12,7 @@ const CONFIG = {
     SUPABASE_ANON_KEY: 'sb_publishable_LahKRu6buj4jSqkMurjyEA_4HJahJ9R',
 
     // Business Configuration
-    DAILY_RATE: 15,
+    DAILY_RATE: 20,
     MAX_DAILY_SPOTS: 4,
 
     // Contact

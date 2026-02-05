@@ -95,7 +95,7 @@ exports.handler = async (event, context) => {
             truck_info: `${booking.trailerType || 'Trailer'} #${booking.trailerNumber || 'N/A'} - ${booking.companyName || 'TPC Booking'}`.trim(),
             parking_date: date,
             parking_type: 'daily',
-            amount: 1500, // $15 per day in cents
+            amount: 2000, // $20 per day in cents
             status: 'confirmed',
             confirmation_code: booking.confirmationCode,
             stripe_payment_id: 'TPC_' + booking.confirmationCode, // Mark as TPC payment
