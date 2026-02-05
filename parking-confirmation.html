@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parking confirmation at Apex Truck Parking. Your reservation is confirmed.">
+    <title>Parking Confirmation | Apex Truck Parking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>">
+    <style>
+        .confirmation-page {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        .confirmation-page h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #1a1a2e;
+        }
+        .confirmation-page .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        .info-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #666;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .gate-code {
+            background: #f5a623;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .gate-code .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        .gate-code .code {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+        }
+        .back-link {
+            display: inline-block;
+            color: #f5a623;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-page">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+
+        <h1>Booking Confirmed!</h1>
+        <p class="subtitle">Thank you for choosing Apex Truck Parking. Your reservation details have been sent via SMS.</p>
+
+        <div class="info-card">
+            <h2>Parking Location</h2>
+            <div class="info-row">
+                <span class="info-label">Address</span>
+                <span class="info-value">6759 Marbut Road</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">City</span>
+                <span class="info-value">Lithonia, GA 30058</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Access</span>
+                <span class="info-value">24/7 Gated Entry</span>
+            </div>
+        </div>
+
+        <div class="gate-code">
+            <div class="label">Your Gate Code</div>
+            <div class="code">Sent via SMS</div>
+        </div>
+
+        <p style="color: #666; font-size: 0.95rem;">
+            Check your phone for the confirmation text with your gate code and reservation details.
+        </p>
+
+        <p style="color: #666; margin-top: 30px;">
+            Questions? Call us at <a href="tel:+14708382281" style="color: #f5a623; font-weight: 600;">(470) 838-2281</a>
+        </p>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
